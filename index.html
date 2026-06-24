@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Randimeghívó</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Montserrat', sans-serif;
+        background: linear-gradient(135deg, #f3e8ff, #e6d4ff, #d8c2ff);
+        background-size: 400% 400%;
+        animation: gradientMove 12s ease infinite;
+        color: #4a3b5a;
+        text-align: center;
+        overflow-x: hidden;
+    }
+
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    #container {
+        max-width: 500px;
+        margin: 60px auto;
+        background: rgba(255, 255, 255, 0.6);
+        padding: 30px;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 25px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 10;
+    }
+
+    h2 {
+        font-family: 'Great Vibes', cursive;
+        font-size: 42px;
+        margin-bottom: 20px;
+        color: #5a3f7c;
+    }
+
+    p {
+        font-size: 20px;
+    }
+
+    button {
+        padding: 14px 28px;
+        margin: 10px;
+        font-size: 18px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    #yesBtn {
+        background: #c59bff;
+        color: white;
+        position: relative;
+    }
+
+    #noBtn {
+        background: #d8c2ff;
+        color: #4a3b5a;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+    }
+
+    @media (max-width: 480px) {
+        button {
+            width: 90%;
+            font-size: 20px;
+        }
+    }
+
+    /* Szívecske + virág mix SVG */
+    .petal {
+        position: fixed;
+        top: -40px;
+        width: 28px;
+        height: 28px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        opacity: 0.9;
+        animation: fall linear infinite;
+        z-index: 1;
+    }
+
+    @keyframes fall {
+        0% { transform: translateY(-50px) rotate(0deg); }
+        100% { transform: translateY(110vh) rotate(360deg); }
+    }
+
+    .emoji {
+        font-size: 90px;
+        margin-bottom: 20px;
+    }
+</style>
+</head>
+<body>
+
+<!-- Háttérzene -->
+<iframe 
+    width="0" height="0" 
+    src="https://www.youtube.com/embed/3H4pQO3QYwE?autoplay=1&loop=1&playlist=3H4pQO3QYwE"
+    frameborder="0" allow="autoplay">
+</iframe>
+
+<!-- Szívecske + virág mix generálása -->
+<script>
+    const shapes = [
+        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><path fill='%23c59bff' d='M30 55 L5 30 A15 15 0 1 1 30 15 A15 15 0 1 1 55 30 Z'/></svg>",
+        "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><circle cx='30' cy='30' r='20' fill='%23d8c2ff'/></svg>"
+    ];
+
+    for (let i = 0; i < 25; i++) {
+        let p = document.createElement("div");
+        p.classList.add("petal");
+        p.style.left = Math.random() * 100 + "vw";
+        p.style.animationDuration = (5 + Math.random() * 6) + "s";
+        p.style.transform = `rotate(${Math.random() * 360}deg)`;
+        p.style.backgroundImage = `url("${shapes[Math.floor(Math.random()*shapes.length)]}")`;
+        document.body.appendChild(p);
+    }
+</script>
+
+<div id="container">
+    <h2>Eljössz velem randira?</h2>
+
+    <button id="yesBtn">Igen</button>
+    <button id="noBtn">Nem</button>
+</div>
+
+<script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const container = document.getElementById("container");
+
+    /* Elugrás funkció (PC + mobil) + rezgés */
+    function jumpYes() {
+        const x = Math.random() * 200 - 100;
+        const y = Math.random() * 200 - 100;
+        yesBtn.style.transform = `translate(${x}px, ${y}px)`;
+
+        /* Rezgés mobilon */
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+    }
+
+    /* PC hover */
+    yesBtn.addEventListener("mouseover", jumpYes);
+
+    /* Mobil érintés */
+    yesBtn.addEventListener("touchstart", jumpYes);
+    yesBtn.addEventListener("touchmove", jumpYes);
+
+    /* NEM gomb → szomorú emoji oldal */
+    noBtn.addEventListener("click", () => {
+        container.innerHTML = `
+            <div class="emoji">😿</div>
+            <p>De ha mégis eljöttél volna... hová mentél volna szívesebben?</p>
+            <button onclick="choosePlace('VakVarjú Étterem')">VakVarjú</button>
+            <button onclick="choosePlace('Jardinette Étterem')">Jardinette</button>
+        `;
+    });
+
+    function choosePlace(place) {
+        container.innerHTML = `
+            <h2>És ha oda vinnélek, akkor igent mondanál?</h2>
+            <button onclick="finalPage()">Még szép!</button>
+            <button onclick="finalPage()">Naná!</button>
+        `;
+    }
+
+    function finalPage() {
+        container.innerHTML = `
+            <h2>Csodás!</h2>
+            <p>Alig várom, hogy végre randizzunk!</p>
+            <p style="font-size:26px; font-family:'Great Vibes', cursive;">Szeretlek 💜</p>
+        `;
+    }
+</script>
+
+</body>
+</html>
